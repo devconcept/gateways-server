@@ -4,11 +4,20 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "test": "mocha --exit",
+    "coverage": "nyc --reporter=lcov mocha --exit",
+    "preversion": "eslint ."
   },
+  "main": "bin/www",
   "engines": {
     "node": ">=6"
   },
+  "author": {
+    "name": "devconcept",
+    "email": "devconcept@outlook.com"
+  },
+  "license": "MIT",
   "dependencies": {
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
