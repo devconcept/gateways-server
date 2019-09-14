@@ -6,17 +6,21 @@ module.exports = {
       .isMongoId().withMessage('The parameter must be a valid MongoId value'),
     body('uid')
       .exists({ checkFalsy: true, checkNull: true }).withMessage('The field uid is required')
-      .isNumeric({ no_symbols: true }).withMessage('The field uid must be a number'),
+      .isNumeric({ no_symbols: true })
+      .withMessage('The field uid must be a number'),
     body('vendor')
       .exists({ checkFalsy: true, checkNull: true }).withMessage('The field vendor is required')
-      .isString().withMessage('The field vendor must be a string'),
+      .isString()
+      .withMessage('The field vendor must be a string'),
     body('created')
       .exists({ checkFalsy: true, checkNull: true }).withMessage('The field created is required')
-      .isISO8601().withMessage('The field created must be a valid ISO8601 date')
+      .isISO8601()
+      .withMessage('The field created must be a valid ISO8601 date')
       .toDate(),
     body('status')
       .exists({ checkFalsy: true, checkNull: true }).withMessage('The field status is required')
-      .isBoolean().withMessage('The field status must be a boolean value')
+      .isBoolean()
+      .withMessage('The field status must be a boolean value')
       .toBoolean(true),
   ],
   removeDeviceValidation: [
