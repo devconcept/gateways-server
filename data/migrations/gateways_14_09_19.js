@@ -14,7 +14,7 @@ function initializeDb(instance) {
   })).pipe(
     tap((collection) => { gatewaysCollection = collection; }),
     mergeMap(() => gatewaysCollection.createIndex({ serial: 1 }, { unique: true })),
-    mergeMap(() => gatewaysCollection.createIndex({ 'devices.uid': 1 }, { unique: true })),
+    mergeMap(() => gatewaysCollection.createIndex({ 'devices.uid': 1 }, { unique: true, partialFilterExpression: { 'devices.uid': { $type: 'object' } } })),
     tap(() => {
       /* eslint-disable-next-line no-console */
       console.log('Database initialized');
