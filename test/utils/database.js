@@ -13,7 +13,7 @@ module.exports.initializeDatabase = function initializeDatabase(app) {
     tap((instance) => {
       dbInstance = instance;
     }),
-    mergeMap(() => from(dbInstance.dropCollection('gateways'))),
+    // mergeMap(() => from(dbInstance.dropCollection('gateways'))),
     mergeMap(() => from(dbInstance.createCollection('gateways'))),
     mergeMap(() => initializeDb(app)),
   ).toPromise();
