@@ -4,6 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const sassMiddleware = require('node-sass-middleware');
+const { normalizeAndPrintError } = require('./helpers/errors');
 
 const gatewaysRouter = require('./routes/gateways');
 
@@ -36,12 +37,12 @@ app.use((req, res, next) => {
 /* eslint-disable-next-line no-unused-vars */
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // res.locals.message = err.message;
+  // res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  normalizeAndPrintError(res, err);
 });
 
 module.exports = app;

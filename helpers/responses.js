@@ -1,4 +1,4 @@
-const { normalizeError } = require('./errors');
+const { normalizeAndPrintError } = require('./errors');
 
 module.exports.sendOk = function sendOk(res, data) {
   res.status(200).send(data);
@@ -9,13 +9,16 @@ module.exports.sendCreated = function sendCreated(res, data) {
 };
 
 module.exports.sendBadRequest = function sendBadRequest(res, err) {
-  res.status(400).send(normalizeError(err));
+  res.status(400);
+  normalizeAndPrintError(res, err);
 };
 
 module.exports.sendNotFound = function sendNotFound(res, err) {
-  res.status(404).send(normalizeError(err));
+  res.status(404);
+  normalizeAndPrintError(res, err);
 };
 
 module.exports.sendInternalError = function sendInternalError(res, err) {
-  res.status(500).send(normalizeError(err));
+  res.status(500);
+  normalizeAndPrintError(res, err);
 };

@@ -1,8 +1,9 @@
 const express = require('express');
 const { tap } = require('rxjs/operators');
 
+const { validateRequest } = require('../helpers/errors');
 const { addGatewayValidation, getGatewayValidation, getAllGatewaysValidation } = require('../validations/routes/gateways');
-const { addDeviceValidation } = require('../validations/routes/devices');
+const { addDeviceValidation, removeDeviceValidation } = require('../validations/routes/devices');
 
 const { getAllGateways, getOneGateway, addGateway } = require('../domain/gateways');
 const { addDevice, removeDeviceInGateway } = require('../domain/devices');
@@ -14,7 +15,7 @@ const {
 const router = express.Router();
 
 /* GET all gateways */
-router.get('/', getAllGatewaysValidation, (req, res) => {
+router.get('/', validateRequest(getAllGatewaysValidation), (req, res) => {
   const { db } = req.app.locals;
   const { next, size = 10 } = req.query;
   let { page } = req.query;
@@ -29,7 +30,7 @@ router.get('/', getAllGatewaysValidation, (req, res) => {
 });
 
 /* GET one gateway */
-router.get('/:gatewayId', getGatewayValidation, (req, res) => {
+router.get('/:gatewayId', validateRequest(getGatewayValidation), (req, res) => {
   const { db } = req.app.locals;
   const { gatewayId } = req.params;
 
@@ -46,7 +47,7 @@ router.get('/:gatewayId', getGatewayValidation, (req, res) => {
 
 
 /* Add one gateway */
-router.post('/', addGatewayValidation, (req, res) => {
+router.post('/', validateRequest(addGatewayValidation), (req, res) => {
   const { db } = req.app.locals;
   const { name, serial, ipv4 } = req.body;
   const newGateway = {
@@ -59,7 +60,7 @@ router.post('/', addGatewayValidation, (req, res) => {
 });
 
 /* Add a device */
-router.post('/:gatewayId/devices', addDeviceValidation, (req, res) => {
+router.post('/:gatewayId/devices', validateRequest(addDeviceValidation), (req, res) => {
   const { db } = req.app.locals;
   const {
     uid, vendor, created, status,
@@ -75,7 +76,7 @@ router.post('/:gatewayId/devices', addDeviceValidation, (req, res) => {
 });
 
 /* Remove a device */
-router.delete('/:gatewayId/devices/:deviceId', (req, res) => {
+router.delete('/:gatewayId/devices/:deviceId', validateRequest(removeDeviceValidation), (req, res) => {
   const { db } = req.app.locals;
   const { gatewayId, deviceId } = req.params;
 
