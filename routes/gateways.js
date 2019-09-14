@@ -23,7 +23,7 @@ router.get('/', getAllGatewaysValidation, (req, res) => {
     page = 1;
   }
 
-  getAllGateways(db, keyset ? next : page, size, keyset).pipe(
+  getAllGateways(db, keyset ? next : (page - 1) * size, size, keyset).pipe(
     tap((gateways) => sendOk(res, gateways)),
   ).subscribe({ error: (err) => sendInternalError(res, err) });
 });
@@ -71,7 +71,7 @@ router.post('/:gatewayId/devices', addDeviceValidation, (req, res) => {
 
   addDevice(db, gatewayId, newDevice).pipe(
     tap((device) => sendCreated(res, device)),
-  ).subscribe({ error: (err) => sendInternalError(err) });
+  ).subscribe({ error: (err) => sendInternalError(res, err) });
 });
 
 /* Remove a device */

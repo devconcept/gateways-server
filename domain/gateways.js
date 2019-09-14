@@ -1,13 +1,13 @@
 const { from } = require('rxjs');
+const { map } = require('rxjs/operators');
 const { ObjectID } = require('mongodb');
 
 module.exports.getAllGateways = function getAllGateways(db, start, limit, keyset) {
-  let dbQuery = db.collection('gateways').find().sort({ serial: 1 }).limit(limit);
+  let dbQuery;
   if (keyset) {
     dbQuery = db.collection('gateways')
-      .find({ serial: { $gt: start } })
+      .find(start ? { serial: { $gt: start } } : {})
       .sort({ serial: 1 })
-      .skip(start)
       .limit(limit);
   } else {
     dbQuery = db.collection('gateways')
@@ -24,5 +24,7 @@ module.exports.getOneGateway = function getOneGateway(db, gatewayId) {
 };
 
 module.exports.addGateway = function addGateway(db, gateway) {
-  return from(db.collection('gateways').insertOne(gateway));
+  return from(db.collection('gateways').insertOne(gateway)).pipe(
+    map((operationResult) => operationResult.ops[0]),
+  );
 };
