@@ -1,93 +1,87 @@
 const express = require('express');
-const { from } = require('rxjs');
 const { tap } = require('rxjs/operators');
-const { ObjectID } = require('mongodb');
 
-const { addGateway, getGateway, getAllGateways } = require('../validations/routes/gateways');
-const { addDevice } = require('../validations/routes/devices');
+const { addGatewayValidation, getGatewayValidation, getAllGatewaysValidation } = require('../validations/routes/gateways');
+const { addDeviceValidation } = require('../validations/routes/devices');
+
+const { getAllGateways, getOneGateway, addGateway } = require('../domain/gateways');
+const { addDevice, removeDeviceInGateway } = require('../domain/devices');
+
+const {
+  sendInternalError, sendOk, sendNotFound, sendCreated,
+} = require('../helpers/responses');
 
 const router = express.Router();
 
 /* GET all gateways */
-router.get('/', getAllGateways, (req, res) => {
+router.get('/', getAllGatewaysValidation, (req, res) => {
   const { db } = req.app.locals;
-  const { page = 1, size = 10 } = req.query;
-  const dbQuery = db.collection('gateways').find().skip((page - 1) * size).limit(size);
-  from(dbQuery.toArray()).pipe(
-    tap((gateways) => res.status(200).send(gateways)),
-  ).subscribe({
-    error: (err) => res.status(500).send(err),
-  });
+  const { next, size = 10 } = req.query;
+  let { page } = req.query;
+  const keyset = Object.prototype.hasOwnProperty.call(req.query, 'next');
+  if (!keyset && !page) {
+    page = 1;
+  }
+
+  getAllGateways(db, keyset ? next : page, size, keyset).pipe(
+    tap((gateways) => sendOk(res, gateways)),
+  ).subscribe({ error: (err) => sendInternalError(res, err) });
 });
 
 /* GET one gateway */
-router.get('/:id', getGateway, (req, res) => {
+router.get('/:gatewayId', getGatewayValidation, (req, res) => {
   const { db } = req.app.locals;
-  from(db.collection('gateways').findOne({ _id: ObjectID(req.params.id) }, { projection: { devices: 1 } })).pipe(
+  const { gatewayId } = req.params;
+
+  getOneGateway(db, gatewayId).pipe(
     tap((gateway) => {
       if (!gateway) {
-        res.status(404).send('Not found');
+        sendNotFound(res, 'Gateway not found');
         return;
       }
-      res.status(200).send(gateway);
+      sendOk(res, gateway);
     }),
-  ).subscribe({
-    error: (err) => res.status(500).send(err),
-  });
+  ).subscribe({ error: (err) => sendInternalError(err) });
 });
 
 
 /* Add one gateway */
-router.post('/', addGateway, (req, res) => {
+router.post('/', addGatewayValidation, (req, res) => {
   const { db } = req.app.locals;
   const { name, serial, ipv4 } = req.body;
-  from(db.collection('gateways').insertOne({
+  const newGateway = {
     serial, name, ipv4, devices: [],
-  })).pipe(
-    tap((result) => {
-      const { ops } = result;
-      res.status(201).send(ops[0]);
-    }),
-  ).subscribe({
-    error: (err) => res.status(500).send(err),
-  });
+  };
+
+  addGateway(db, newGateway).pipe(
+    tap((gateway) => sendCreated(res, gateway)),
+  ).subscribe({ error: (err) => sendInternalError(res, err) });
 });
 
 /* Add a device */
-router.post('/:id/devices', addDevice, (req, res) => {
+router.post('/:gatewayId/devices', addDeviceValidation, (req, res) => {
   const { db } = req.app.locals;
   const {
     uid, vendor, created, status,
   } = req.body;
-  const { id } = req.params;
-  from(db.collection('gateways').findOneAndUpdate({ _id: ObjectID(id) }, {
-    $push: {
-      devices: {
-        $each: [{uid, vendor, created, status,}],
-        $slice: -10
-      },
-    },
-  })).pipe(
-    tap((result) => {
-      console.log(result);
-      res.status(201).send('');
-    }),
-  ).subscribe({
-    error: (err) => res.status(500).send(err),
-  });
+  const { gatewayId } = req.params;
+  const newDevice = {
+    uid, vendor, created, status,
+  };
+
+  addDevice(db, gatewayId, newDevice).pipe(
+    tap((device) => sendCreated(res, device)),
+  ).subscribe({ error: (err) => sendInternalError(err) });
 });
 
 /* Remove a device */
-router.delete('/:id/devices/:deviceId', (req, res) => {
+router.delete('/:gatewayId/devices/:deviceId', (req, res) => {
   const { db } = req.app.locals;
-  const { id, deviceId: uid } = req.params;
-  from(db.collection('gateways').findOneAndUpdate({ _id: ObjectID(id) }, {
-    $pull: { devices: { uid } },
-  })).pipe(
+  const { gatewayId, deviceId } = req.params;
+
+  removeDeviceInGateway(db, gatewayId, deviceId).pipe(
     tap(() => res.status(204).send()),
-  ).subscribe({
-    error: (err) => res.status(500).send(err),
-  });
+  ).subscribe({ error: (err) => sendInternalError(res, err) });
 });
 
 module.exports = router;

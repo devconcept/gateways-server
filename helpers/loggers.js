@@ -4,10 +4,6 @@ const debugLog = require('debug')('gateways:log');
 const debugError = require('debug')('gateways:error');
 
 class DebugTransport extends Transport {
-  constructor() {
-    super();
-  }
-
   log(info, callback) {
     setImmediate(() => {
       this.emit('logged', info);
@@ -24,9 +20,9 @@ class DebugTransport extends Transport {
 
 const logger = winston.createLogger({
   transports: [
-      // TODO: Add production transport
-      new DebugTransport()
-  ]
+    // TODO: Add production transport
+    new DebugTransport(),
+  ],
 });
 
 /* eslint-disable-next-line no-console */
