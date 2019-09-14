@@ -21,9 +21,7 @@ describe('Gateways', () => {
     });
   });
 
-  afterEach(() => {
-    sinon.restore();
-  });
+  afterEach(() => sinon.restore());
 
   after(() => cleanDatabase());
 });
