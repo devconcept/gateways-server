@@ -8,7 +8,10 @@ const databaseName = process.env.MONGO_DATABASE || 'gateways';
 
 module.exports.db = function db() {
   return !dbInstance
-    ? from(MongoClient.connect(databaseUrl, { useNewUrlParser: true })).pipe(
+    ? from(MongoClient.connect(databaseUrl, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })).pipe(
       mergeMap((client) => {
         dbInstance = client.db(databaseName);
         return of(dbInstance);
