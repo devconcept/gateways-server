@@ -3,8 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "npm run run-dev",
+    "run-dev": "cross-env NODE_ENV=development && node ./bin/www",
     "lint": "eslint . --fix",
+    "migrate": "node ./data/migrations/initialize.js",
     "test": "mocha --exit",
     "coverage": "nyc --reporter=lcov mocha --exit",
     "preversion": "eslint ."
@@ -22,6 +24,7 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "express-validator": "^6.2.0",
     "http-errors": "~1.6.3",
     "mongodb": "^3.3.2",
     "morgan": "~1.9.1",
@@ -32,6 +35,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "cross-env": "^5.2.1",
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
