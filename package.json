@@ -15,7 +15,7 @@
   "pre-commit": [ "lint" ],
   "main": "bin/www",
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "author": {
     "name": "devconcept",
