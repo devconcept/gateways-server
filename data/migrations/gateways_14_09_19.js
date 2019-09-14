@@ -24,3 +24,5 @@ function initializeDb(instance) {
 }
 
 db().pipe(tap(initializeDb)).subscribe();
+
+module.exports.initializeDb = initializeDb;
