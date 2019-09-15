@@ -15,7 +15,7 @@ const gatewaysRouter = require('./routes/gateways');
 const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'resources/views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
@@ -23,9 +23,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(sassMiddleware({
-  src: path.join(__dirname, 'public'),
-  dest: path.join(__dirname, 'public'),
-  indentedSyntax: true, // true = .sass and false = .scss
+  src: path.join(__dirname, 'resources/public'),
+  dest: path.join(__dirname, 'resources/public'),
+  indentedSyntax: false, // true = .sass and false = .scss
   sourceMap: true,
 }));
 
@@ -34,7 +34,7 @@ if (isProduction() || isTest()) {
   app.use(compression());
 }
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'resources/public')));
 
 // TODO: Add cors
 app.use('/gateways', gatewaysRouter);
