@@ -6,8 +6,9 @@ module.exports = {
       .isMongoId().withMessage('The parameter must be a valid MongoId value'),
     body('uid')
       .exists({ checkFalsy: true, checkNull: true }).withMessage('The field uid is required')
-      .isNumeric({ no_symbols: true })
-      .withMessage('The field uid must be a number'),
+      .isInt({ allow_leading_zeroes: false, min: 1 })
+      .withMessage('The field uid must be a number')
+      .toInt(10),
     body('vendor')
       .exists({ checkFalsy: true, checkNull: true }).withMessage('The field vendor is required')
       .isString()
