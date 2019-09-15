@@ -12,6 +12,8 @@ RUN npm install pm2 -g
 
 COPY . /usr/src/app
 
-EXPOSE 3000
+EXPOSE 3100
 
-CMD ["pm2-docker", "start", "process.json"]
+CMD ["pm2-runtime", "start", "process.json"]
+
+# CMD ["npm", "run", "start-prod"]

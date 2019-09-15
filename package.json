@@ -5,7 +5,8 @@
   "scripts": {
     "start": "npm run run-dev",
     "run-dev": "cross-env NODE_ENV=development, DEBUG=gateways* && node ./bin/www",
-    "run-prod": "pm2 start process.json",
+    "run-prod": "cross-env NODE_ENV=production && node ./bin/www",
+    "run-cluster": "pm2 start process.json",
     "lint": "eslint . ./bin/www --fix",
     "migrate": "migrate up --migrations-dir=./data/migrations",
     "test": "npm run migrate && mocha --exit",

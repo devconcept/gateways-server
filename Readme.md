@@ -44,7 +44,15 @@ In production mode execute
 $ npm run run-prod
 ``` 
 
-The default local port serving the app is `3500`
+The default local port serving the app is `3100`
+
+To run the app in a Docker container run
+
+```bash
+$ docker-compose -f docker-compose.yml up -d
+``` 
+
+NOTE: PM2 has a bug running inside the container that prevent the web server from running (Something related to ES syntax).
 
 ## Linting
 

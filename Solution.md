@@ -124,9 +124,7 @@ To meet the validation requirements of having max 10 devices per gateway the dat
 
 ## Final considerations
 
-There are Docker configuration files included in the solution but this service is blocked in Cuba so I have no idea if it works. I cannot test it and fix any bugs. I have an account and downloaded an image file but Docker doesn't play well with VPNs and I got an error at the end I could't fix. Sorry about that. Ideally a Docker container should be used to deploy the application in real life.
-
-I also included PM2 to act as a load balancer and maintain a cluster of apps running but using a service like Kubernetes would be better for this tasks. In all cases only one database connection is spawned per app.
+I included PM2 to act as a load balancer and maintain a cluster of apps running but using a service like Kubernetes would be better for this tasks. In all cases only one database connection is spawned per app.
 
 The app logger in production uses a daily rotating file strategy that will be at most 50 Mb and last 15 days. You should include a remote logging transport as well for easy access but make sure there is enough space on the server to store the file backup logs in case the remote logging service is down.
 
