@@ -6,8 +6,9 @@ module.exports = {
       .isMongoId().withMessage('The parameter must be a valid MongoId value'),
     body('uid')
       .exists({ checkFalsy: true, checkNull: true }).withMessage('The field uid is required')
-      .isNumeric({ no_symbols: true })
-      .withMessage('The field uid must be a number'),
+      .isInt({ allow_leading_zeroes: false, min: 1 })
+      .withMessage('The field uid must be a number')
+      .toInt(10),
     body('vendor')
       .exists({ checkFalsy: true, checkNull: true }).withMessage('The field vendor is required')
       .isString()
@@ -29,6 +30,7 @@ module.exports = {
       .isMongoId().withMessage('The parameter gatewayId must be a valid MongoId value'),
     param('deviceId')
       .exists({ checkFalsy: true, checkNull: true })
-      .isNumeric({ no_symbols: true }).withMessage('The parameter deviceId must be a number'),
+      .isInt({ min: 1, allow_leading_zeroes: 0 }).withMessage('The parameter deviceId must be an integer greater than zero')
+      .toInt(10),
   ],
 };
