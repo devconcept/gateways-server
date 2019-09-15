@@ -6,6 +6,8 @@ const logger = require('morgan');
 const sassMiddleware = require('node-sass-middleware');
 const helmet = require('helmet');
 const compression = require('compression');
+const cors = require('cors');
+const config = require('config');
 
 const { normalizeAndPrintError } = require('./helpers/errors');
 const { isProduction, isTest } = require('./helpers/environments');
@@ -36,7 +38,7 @@ if (isProduction() || isTest()) {
 
 app.use(express.static(path.join(__dirname, 'resources/public')));
 
-// TODO: Add cors
+app.use(cors(config.get('cors')));
 app.use('/gateways', gatewaysRouter);
 
 // catch 404 and forward to error handler
