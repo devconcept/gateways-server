@@ -4,7 +4,11 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const sassMiddleware = require('node-sass-middleware');
+const helmet = require('helmet');
+const compression = require('compression');
+
 const { normalizeAndPrintError } = require('./helpers/errors');
+const { isProduction, isTest } = require('./helpers/environments');
 
 const gatewaysRouter = require('./routes/gateways');
 
@@ -24,8 +28,15 @@ app.use(sassMiddleware({
   indentedSyntax: true, // true = .sass and false = .scss
   sourceMap: true,
 }));
+
+if (isProduction() || isTest()) {
+  app.use(helmet());
+  app.use(compression());
+}
+
 app.use(express.static(path.join(__dirname, 'public')));
 
+// TODO: Add cors
 app.use('/gateways', gatewaysRouter);
 
 // catch 404 and forward to error handler
