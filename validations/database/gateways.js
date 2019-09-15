@@ -16,7 +16,7 @@ module.exports = {
         pattern: '^(?:([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$',
         description: 'must be a string and is required',
       },
-      peripherals: {
+      devices: {
         bsonType: 'array',
         description: 'must be a array of objects containing uid, vendor, created and status',
         maxItems: 10,
@@ -25,7 +25,8 @@ module.exports = {
           required: ['uid', 'vendor', 'created', 'status'],
           properties: {
             uid: {
-              bsonType: 'double',
+              bsonType: 'int',
+              minimum: 1,
               description: 'must be a number and is required',
             },
             vendor: {
