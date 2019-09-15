@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-  - "6"
   - "8"
   - "10"
 services: mongodb
@@ -8,3 +7,5 @@ env:
   - NODE_ENV=test
 before_script:
   - sleep 15
+after_script:
+  - npm run coveralls

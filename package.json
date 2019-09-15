@@ -5,17 +5,20 @@
   "scripts": {
     "start": "npm run run-dev",
     "run-dev": "cross-env NODE_ENV=development, DEBUG=gateways* && node ./bin/www",
-    "run-production": "pm2 start process.json",
+    "run-prod": "pm2 start process.json",
     "lint": "eslint . ./bin/www --fix",
-    "migrate": "node data/migrations/gateways_14_09_19.js",
-    "test": "mocha --exit",
+    "migrate": "migrate up --migrations-dir=./data/migrations",
+    "test": "npm run migrate && mocha --exit",
     "coverage": "nyc --reporter=lcov mocha --exit",
+    "coveralls": "npm run coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
     "preversion": "eslint ."
   },
-  "pre-commit": [ "lint" ],
+  "pre-commit": [
+    "lint"
+  ],
   "main": "bin/www",
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "author": {
     "name": "devconcept",
@@ -23,10 +26,14 @@
   },
   "license": "MIT",
   "dependencies": {
+    "compression": "^1.7.4",
+    "config": "^3.2.2",
     "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "express-validator": "^6.2.0",
+    "helmet": "^3.21.0",
     "http-errors": "~1.6.3",
     "mongodb": "^3.3.2",
     "morgan": "~1.9.1",
@@ -35,14 +42,17 @@
     "rxjs": "^6.5.3",
     "uuid": "^3.3.3",
     "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^4.1.0",
     "winston-transport": "^4.3.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "coveralls": "^3.0.6",
     "cross-env": "^5.2.1",
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
+    "migrate": "^1.6.2",
     "mocha": "^6.2.0",
     "nyc": "^14.1.1",
     "pm2": "^3.5.1",

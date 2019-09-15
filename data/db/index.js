@@ -1,25 +1,40 @@
 const { MongoClient } = require('mongodb');
-const { from, of } = require('rxjs');
-const { mergeMap, map } = require('rxjs/operators');
+const config = require('config');
+const { from, of, Subject } = require('rxjs');
+const { mergeMap, map, finalize } = require('rxjs/operators');
 
 let dbInstance;
 let clientInstance;
-const databaseUrl = process.env.MONGO_URL || 'mongodb://localhost:27017';
-const databaseName = process.env.MONGO_DATABASE || 'gateways';
+let resolving = false;
+const connectionManager = new Subject();
+const databaseUrl = process.env.MONGO_URL
+  || (config.has('database.url') && config.get('database.url'))
+  || 'mongodb://localhost:27017';
+const databaseName = process.env.MONGO_DATABASE
+  || (config.has('database.name') && config.get('database.name'))
+  || 'gateways';
 
 function openConnection() {
-  return !clientInstance
-    ? from(MongoClient.connect(databaseUrl, {
+  if (!clientInstance) {
+    if (resolving) {
+      return connectionManager.asObservable();
+    }
+    resolving = true;
+    return from(MongoClient.connect(databaseUrl, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })).pipe(
       mergeMap((client) => {
         clientInstance = client;
         dbInstance = client.db(databaseName);
+        connectionManager.next(clientInstance);
+        connectionManager.complete();
         return of(clientInstance);
       }),
-    )
-    : of(clientInstance);
+      finalize(() => { resolving = false; }),
+    );
+  }
+  return of(clientInstance);
 }
 
 module.exports.db = function db() {
@@ -32,4 +47,12 @@ module.exports.client = function client() {
   return openConnection().pipe(
     map(() => clientInstance),
   );
+};
+
+module.exports.isResolving = function isResolving() {
+  return resolving;
+};
+
+module.exports.waitForConnection = function waitForConnection() {
+  return connectionManager.asObservable();
 };
