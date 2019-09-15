@@ -16,12 +16,15 @@ function normalizeError(error) {
     if (error instanceof NormalizedError) {
       return error;
     }
-    if (error instanceof MongoError) {
-      return new NormalizedError(error.errmsg, codes.dataValidation, error);
+    if (error instanceof MongoError && error.code === 121) {
+      return new NormalizedError(error.errmsg, codes.dataValidation, error, { status: 400 });
     }
 
     if (error instanceof ValidationError) {
-      return new NormalizedError(error.message, codes.routeValidation, error, error.extra);
+      return new NormalizedError(error.message, codes.routeValidation, error, {
+        status: 400,
+        extra: error.extra,
+      });
     }
   }
   return new NormalizedError(error, codes.generic, error);
@@ -32,8 +35,11 @@ module.exports.normalizeError = normalizeError;
 module.exports.normalizeAndPrintError = function normalizeAndPrintError(res, error) {
   const finalError = normalizeError(error);
   const {
-    message, code, extra, stack,
+    message, code, extra, stack, status,
   } = finalError;
+  if (status) {
+    res.status(status);
+  }
   if (development) {
     res.send({
       message, code, extra, stack,
