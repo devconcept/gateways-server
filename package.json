@@ -12,7 +12,9 @@
     "coverage": "nyc --reporter=lcov mocha --exit",
     "preversion": "eslint ."
   },
-  "pre-commit": [ "lint" ],
+  "pre-commit": [
+    "lint"
+  ],
   "main": "bin/www",
   "engines": {
     "node": ">=8"
@@ -23,10 +25,12 @@
   },
   "license": "MIT",
   "dependencies": {
+    "compression": "^1.7.4",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "express-validator": "^6.2.0",
+    "helmet": "^3.21.0",
     "http-errors": "~1.6.3",
     "mongodb": "^3.3.2",
     "morgan": "~1.9.1",
