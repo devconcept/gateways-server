@@ -9,7 +9,7 @@ const { getAllGateways, getOneGateway, addGateway } = require('../domain/gateway
 const { addDevice, removeDeviceInGateway } = require('../domain/devices');
 
 const {
-  sendInternalError, sendOk, sendNotFound, sendCreated,
+  sendError, sendOk, sendNotFound, sendCreated,
 } = require('../helpers/responses');
 
 const router = express.Router();
@@ -26,7 +26,7 @@ router.get('/', validateRequest(getAllGatewaysValidation), (req, res) => {
 
   getAllGateways(db, keyset ? next : (page - 1) * size, size, keyset).pipe(
     tap((gateways) => sendOk(res, gateways)),
-  ).subscribe({ error: (err) => sendInternalError(res, err) });
+  ).subscribe({ error: (err) => sendError(res, err) });
 });
 
 /* GET one gateway */
@@ -42,9 +42,8 @@ router.get('/:gatewayId', validateRequest(getGatewayValidation), (req, res) => {
       }
       sendOk(res, gateway);
     }),
-  ).subscribe({ error: (err) => sendInternalError(err) });
+  ).subscribe({ error: (err) => sendError(err) });
 });
-
 
 /* Add one gateway */
 router.post('/', validateRequest(addGatewayValidation), (req, res) => {
@@ -56,7 +55,7 @@ router.post('/', validateRequest(addGatewayValidation), (req, res) => {
 
   addGateway(db, newGateway).pipe(
     tap((gateway) => sendCreated(res, gateway)),
-  ).subscribe({ error: (err) => sendInternalError(res, err) });
+  ).subscribe({ error: (err) => sendError(res, err) });
 });
 
 /* Add a device */
@@ -72,7 +71,7 @@ router.post('/:gatewayId/devices', validateRequest(addDeviceValidation), (req, r
 
   addDevice(db, gatewayId, newDevice).pipe(
     tap((device) => sendCreated(res, device)),
-  ).subscribe({ error: (err) => sendInternalError(res, err) });
+  ).subscribe({ error: (err) => sendError(res, err) });
 });
 
 /* Remove a device */
@@ -82,7 +81,7 @@ router.delete('/:gatewayId/devices/:deviceId', validateRequest(removeDeviceValid
 
   removeDeviceInGateway(db, gatewayId, deviceId).pipe(
     tap(() => res.status(204).send()),
-  ).subscribe({ error: (err) => sendInternalError(res, err) });
+  ).subscribe({ error: (err) => sendError(res, err) });
 });
 
 module.exports = router;

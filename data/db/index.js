@@ -1,4 +1,5 @@
 const { MongoClient } = require('mongodb');
+const config = require('config');
 const { from, of, Subject } = require('rxjs');
 const { mergeMap, map, finalize } = require('rxjs/operators');
 
@@ -6,8 +7,12 @@ let dbInstance;
 let clientInstance;
 let resolving = false;
 const connectionManager = new Subject();
-const databaseUrl = process.env.MONGO_URL || 'mongodb://localhost:27017';
-const databaseName = process.env.MONGO_DATABASE || 'gateways';
+const databaseUrl = process.env.MONGO_URL
+  || (config.has('database.url') && config.get('database.url'))
+  || 'mongodb://localhost:27017';
+const databaseName = process.env.MONGO_DATABASE
+  || (config.has('database.name') && config.get('database.name'))
+  || 'gateways';
 
 function openConnection() {
   if (!clientInstance) {

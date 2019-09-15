@@ -2,6 +2,8 @@ const winston = require('winston');
 const Transport = require('winston-transport');
 const debugLog = require('debug')('gateways:log');
 const debugError = require('debug')('gateways:error');
+const { isProduction } = require('./environments');
+require('winston-daily-rotate-file');
 
 class DebugTransport extends Transport {
   log(info, callback) {
@@ -18,12 +20,27 @@ class DebugTransport extends Transport {
   }
 }
 
-const logger = winston.createLogger({
-  transports: [
-    // TODO: Add production transport
+let transports;
+if (isProduction()) {
+  transports = [
     new DebugTransport(),
-  ],
-});
+    new winston.transports.DailyRotateFile({
+      dirname: 'logs',
+      frequency: '1d',
+      filename: 'gateways %DATE%.log',
+      zippedArchive: true,
+      datePattern: 'YYYY-MM-DD',
+      maxSize: '50m',
+      maxFiles: '15d',
+    }),
+    // Add your remote logger here
+  ];
+} else {
+  transports = [
+    new DebugTransport(),
+  ];
+}
+const logger = winston.createLogger({ transports, defaultMeta: { service: 'gateways-service' } });
 
 /* eslint-disable-next-line no-console */
 debugLog.log = console.log.bind(console);

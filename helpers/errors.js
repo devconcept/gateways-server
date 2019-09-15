@@ -2,8 +2,7 @@ const { MongoError } = require('mongodb');
 const { validationResult } = require('express-validator');
 const { NormalizedError } = require('./classes/normalized-error');
 const { ValidationError } = require('./classes/validation-error');
-
-const development = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+const { isDevelopment } = require('./environments');
 
 const codes = {
   generic: 'GenericError',
@@ -40,10 +39,8 @@ module.exports.normalizeAndPrintError = function normalizeAndPrintError(res, err
   const {
     message, code, extra, stack, status,
   } = finalError;
-  if (status) {
-    res.status(status);
-  }
-  if (development) {
+  res.status(status || 500);
+  if (isDevelopment()) {
     res.send({
       message, code, extra, stack,
     });
