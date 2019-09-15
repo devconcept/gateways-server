@@ -2,15 +2,15 @@ const chai = require('chai');
 const request = require('supertest');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
-const app = require('../app');
-const { initializeDatabase, cleanDatabase } = require('./utils/database');
+const { prepareDatabase, cleanDatabase } = require('./utils/database');
 const { generateGateways, changeId } = require('./utils/data');
+const app = require('../app');
 
 chai.use(sinonChai);
 const { expect } = chai;
 
 describe('Gateways', function () {
-  beforeEach(() => initializeDatabase(app));
+  beforeEach(() => prepareDatabase(app));
 
   describe('All gateways', function () {
     it('Should return gateway objects', function () {

@@ -3,14 +3,15 @@ const request = require('supertest');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const app = require('../app');
-const { initializeDatabase, cleanDatabase } = require('./utils/database');
+const { prepareDatabase, cleanDatabase } = require('./utils/database');
 const { generateDevices, generateGateways } = require('./utils/data');
 
 chai.use(sinonChai);
 const { expect } = chai;
 
+
 describe('Devices', function () {
-  beforeEach(() => initializeDatabase(app));
+  beforeEach(() => prepareDatabase(app));
 
   describe('Add device', function () {
     it('Should add a device to a gateway object', function () {

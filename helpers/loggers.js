@@ -3,6 +3,7 @@ const Transport = require('winston-transport');
 const debugLog = require('debug')('gateways:log');
 const debugError = require('debug')('gateways:error');
 const { isProduction } = require('./environments');
+require('winston-daily-rotate-file');
 
 class DebugTransport extends Transport {
   log(info, callback) {
@@ -23,7 +24,15 @@ let transports;
 if (isProduction()) {
   transports = [
     new DebugTransport(),
-    new winston.transports.File({ dirname: 'logs' }),
+    new winston.transports.DailyRotateFile({
+      dirname: 'logs',
+      frequency: '1d',
+      filename: 'gateways %DATE%.log',
+      zippedArchive: true,
+      datePattern: 'YYYY-MM-DD',
+      maxSize: '50m',
+      maxFiles: '15d',
+    }),
   ];
 } else {
   transports = [

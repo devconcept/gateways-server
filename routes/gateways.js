@@ -45,7 +45,6 @@ router.get('/:gatewayId', validateRequest(getGatewayValidation), (req, res) => {
   ).subscribe({ error: (err) => sendInternalError(err) });
 });
 
-
 /* Add one gateway */
 router.post('/', validateRequest(addGatewayValidation), (req, res) => {
   const { db } = req.app.locals;

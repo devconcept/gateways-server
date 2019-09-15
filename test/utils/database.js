@@ -2,7 +2,7 @@ const { from } = require('rxjs');
 const { mergeMap, tap } = require('rxjs/operators');
 const { db, client } = require('../../data/db');
 
-module.exports.initializeDatabase = function initializeDatabase(app) {
+module.exports.prepareDatabase = function prepareDatabase(app) {
   let dbInstance;
   return db().pipe(
     tap((instance) => {

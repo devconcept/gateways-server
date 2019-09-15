@@ -8,7 +8,7 @@ module.exports.addDevice = function addDevice(db, gatewayId, device) {
       if (result.modifiedCount) {
         return of(device);
       }
-      return throwError('Already exists');
+      return throwError('Invalid gateway update');
     }),
   );
 };
