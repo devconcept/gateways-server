@@ -30,6 +30,7 @@ module.exports = {
       .isMongoId().withMessage('The parameter gatewayId must be a valid MongoId value'),
     param('deviceId')
       .exists({ checkFalsy: true, checkNull: true })
-      .isInt({ min: 1, allow_leading_zeroes: 0 }).withMessage('The parameter deviceId must be an integer greater than zero'),
+      .isInt({ min: 1, allow_leading_zeroes: 0 }).withMessage('The parameter deviceId must be an integer greater than zero')
+      .toInt(10),
   ],
 };

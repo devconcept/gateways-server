@@ -1,5 +1,5 @@
-const { from, throwError } = require('rxjs');
-const { mergeMap, of } = require('rxjs/operators');
+const { from, throwError, of } = require('rxjs');
+const { mergeMap } = require('rxjs/operators');
 const { ObjectID } = require('mongodb');
 
 module.exports.addDevice = function addDevice(db, gatewayId, device) {
@@ -24,7 +24,17 @@ module.exports.addDevice = function addDevice(db, gatewayId, device) {
 };
 
 module.exports.removeDeviceInGateway = function removeDeviceInGateway(db, gatewayId, deviceId) {
-  return from(db.collection('gateways').findOneAndUpdate({ _id: ObjectID(gatewayId) }, {
+  return from(db.collection('gateways').updateOne({ _id: ObjectID(gatewayId) }, {
     $pull: { devices: { uid: deviceId } },
-  }));
+  })).pipe(
+    mergeMap((result) => {
+      if (!result.matchedCount) {
+        return throwError('Not found');
+      }
+      if (!result.modifiedCount) {
+        return throwError('Not found');
+      }
+      return of(deviceId);
+    }),
+  );
 };
