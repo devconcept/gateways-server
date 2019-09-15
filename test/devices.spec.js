@@ -14,6 +14,7 @@ describe('Devices', function () {
 
   describe('Add device', function () {
     it('Should add a device to a gateway object', function () {
+      this.slow(300);
       const { db } = app.locals;
       return db.collection('gateways')
         .insertOne(generateGateways(1))
