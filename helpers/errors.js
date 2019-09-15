@@ -39,9 +39,7 @@ module.exports.normalizeAndPrintError = function normalizeAndPrintError(res, err
   const {
     message, code, extra, stack, status,
   } = finalError;
-  if (status) {
-    res.status(status);
-  }
+  res.status(status || 500);
   if (isDevelopment()) {
     res.send({
       message, code, extra, stack,

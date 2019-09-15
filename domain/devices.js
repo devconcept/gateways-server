@@ -1,6 +1,7 @@
 const { from, throwError, of } = require('rxjs');
 const { mergeMap } = require('rxjs/operators');
 const { ObjectID } = require('mongodb');
+const { NotFoundError } = require('../helpers/classes/not-found-error');
 
 module.exports.addDevice = function addDevice(db, gatewayId, device) {
   return from(db.collection('gateways').updateOne({ _id: ObjectID(gatewayId), 'devices.uid': { $ne: device.uid } }, { $push: { devices: device } })).pipe(
@@ -8,7 +9,7 @@ module.exports.addDevice = function addDevice(db, gatewayId, device) {
       if (result.modifiedCount) {
         return of(device);
       }
-      return throwError('Invalid gateway update');
+      return throwError(new Error('Invalid gateway update'));
     }),
   );
 };
@@ -21,7 +22,7 @@ module.exports.removeDeviceInGateway = function removeDeviceInGateway(db, gatewa
       if (result.modifiedCount) {
         return of(deviceId);
       }
-      return throwError('Not found');
+      return throwError(new NotFoundError('Not found'));
     }),
   );
 };

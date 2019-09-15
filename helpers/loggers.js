@@ -33,6 +33,7 @@ if (isProduction()) {
       maxSize: '50m',
       maxFiles: '15d',
     }),
+    // Add your remote logger here
   ];
 } else {
   transports = [
