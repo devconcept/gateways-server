@@ -9,7 +9,8 @@ module.exports.addDevice = function addDevice(db, gatewayId, device) {
         return of(device);
       }
       return throwError('Already exists');
-    }));
+    }),
+  );
 };
 
 module.exports.removeDeviceInGateway = function removeDeviceInGateway(db, gatewayId, deviceId) {
@@ -19,7 +20,6 @@ module.exports.removeDeviceInGateway = function removeDeviceInGateway(db, gatewa
     mergeMap((result) => {
       if (result.modifiedCount) {
         return of(deviceId);
-
       }
       return throwError('Not found');
     }),
