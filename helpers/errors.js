@@ -27,7 +27,10 @@ function normalizeError(error) {
       });
     }
   }
-  return new NormalizedError(error, codes.generic, error);
+  return new NormalizedError(error.message, error.code || codes.generic, error, {
+    status: error.status,
+    extra: error.extra,
+  });
 }
 
 module.exports.normalizeError = normalizeError;

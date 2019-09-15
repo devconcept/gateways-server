@@ -1,3 +1,4 @@
+const { NotFoundError } = require('./classes/not-found-error');
 const { normalizeAndPrintError } = require('./errors');
 
 module.exports.sendOk = function sendOk(res, data) {
@@ -14,8 +15,7 @@ module.exports.sendBadRequest = function sendBadRequest(res, err) {
 };
 
 module.exports.sendNotFound = function sendNotFound(res, err) {
-  res.status(404);
-  normalizeAndPrintError(res, err);
+  normalizeAndPrintError(res, new NotFoundError(err));
 };
 
 module.exports.sendInternalError = function sendInternalError(res, err) {
