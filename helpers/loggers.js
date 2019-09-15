@@ -2,6 +2,7 @@ const winston = require('winston');
 const Transport = require('winston-transport');
 const debugLog = require('debug')('gateways:log');
 const debugError = require('debug')('gateways:error');
+const { isProduction } = require('./environments');
 
 class DebugTransport extends Transport {
   log(info, callback) {
@@ -18,12 +19,18 @@ class DebugTransport extends Transport {
   }
 }
 
-const logger = winston.createLogger({
-  transports: [
-    // TODO: Add production transport
+let transports;
+if (isProduction()) {
+  transports = [
     new DebugTransport(),
-  ],
-});
+    new winston.transports.File({ dirname: 'logs' }),
+  ];
+} else {
+  transports = [
+    new DebugTransport(),
+  ];
+}
+const logger = winston.createLogger({ transports, defaultMeta: { service: 'gateways-service' } });
 
 /* eslint-disable-next-line no-console */
 debugLog.log = console.log.bind(console);
