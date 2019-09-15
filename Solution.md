@@ -129,3 +129,5 @@ There are Docker configuration files included in the solution but this service i
 I also included PM2 to act as a load balancer and maintain a cluster of apps running but using a service like Kubernetes would be better for this tasks. In all cases only one database connection is spawned per app.
 
 The app logger in production uses a daily rotating file strategy that will be at most 50 Mb and last 15 days. You should include a remote logging transport as well for easy access but make sure there is enough space on the server to store the file backup logs in case the remote logging service is down.
+
+There are no health-checks in-place. At least there is some code to handle graceful shutdown. Again lack of access to the Kubernetes services is an obstacle.

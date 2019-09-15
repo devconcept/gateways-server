@@ -10,6 +10,7 @@
     "migrate": "migrate up --migrations-dir=./data/migrations",
     "test": "npm run migrate && mocha --exit",
     "coverage": "nyc --reporter=lcov mocha --exit",
+    "coveralls": "npm run coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
     "preversion": "eslint ."
   },
   "pre-commit": [
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "coveralls": "^3.0.6",
     "cross-env": "^5.2.1",
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^14.0.0",

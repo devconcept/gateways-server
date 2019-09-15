@@ -1,5 +1,7 @@
 # Gateway Manager
 
+[![Build Status][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url]
+
 Rest API service to manage gateways
 
 See [Solution.md](Solution.md) file for an explanation of the solution to the exercise.
@@ -58,3 +60,8 @@ $ npm test
 ```
 
 Tests are written with [mocha](https://mochajs.org/) and [chai](http://chaijs.com/).
+
+[travis-url]: https://travis-ci.org/devconcept/gateways-server
+[travis-image]: https://travis-ci.org/devconcept/gateways-server.svg?branch=master "Build status"
+[coveralls-url]: https://coveralls.io/github/devconcept/gateways-server?branch=master
+[coveralls-image]: https://coveralls.io/repos/github/devconcept/gateways-server/badge.svg?branch=master "Coverage report"
